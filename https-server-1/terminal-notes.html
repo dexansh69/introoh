@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminal & Bash Notes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1a1a1a;
+    --border: #2a2a2a;
+    --accent: #00ff88;
+    --accent2: #00aaff;
+    --accent3: #ff6b6b;
+    --accent4: #ffcc00;
+    --text: #e8e8e8;
+    --muted: #666;
+    --code-bg: #0a0a0a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 50px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 30px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  h1 {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #fff;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .icon-green { background: rgba(0,255,136,0.1); color: var(--accent); border: 1px solid rgba(0,255,136,0.2); }
+  .icon-blue { background: rgba(0,170,255,0.1); color: var(--accent2); border: 1px solid rgba(0,170,255,0.2); }
+  .icon-red { background: rgba(255,107,107,0.1); color: var(--accent3); border: 1px solid rgba(255,107,107,0.2); }
+  .icon-yellow { background: rgba(255,204,0,0.1); color: var(--accent4); border: 1px solid rgba(255,204,0,0.2); }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+
+  .cards {
+    display: grid;
+    gap: 8px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 12px;
+    align-items: center;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: #3a3a3a; }
+
+  .card.full {
+    grid-template-columns: 1fr;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--code-bg);
+    padding: 4px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.5;
+  }
+
+  .card-desc strong {
+    color: #ddd;
+    font-weight: 600;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  .group-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  .permission-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .permission-table th {
+    background: var(--surface2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .permission-table td {
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #aaa;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .permission-table tr:last-child td { border-bottom: none; }
+  .permission-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .permission-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 13px;
+  }
+
+  .note {
+    background: rgba(0,170,255,0.05);
+    border: 1px solid rgba(0,170,255,0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #88aacc;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 10px;
+  }
+
+  .note::before {
+    content: '💡 ';
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .badge-green { background: rgba(0,255,136,0.1); color: var(--accent); border: 1px solid rgba(0,255,136,0.2); }
+  .badge-red { background: rgba(255,107,107,0.1); color: var(--accent3); border: 1px solid rgba(255,107,107,0.2); }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <span class="tag">// Reference Sheet</span>
+    <h1>Terminal & <span>Bash</span> Notes</h1>
+    <p class="subtitle">// by Devansh · Last updated March 2026</p>
+  </header>
+
+  <!-- NAVIGATION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">📁</div>
+      <h2 class="section-title">Navigation & File Management</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <code>pwd</code>
+        <span class="card-desc">Print current directory path</span>
+      </div>
+      <div class="card">
+        <code>cd foldername</code>
+        <span class="card-desc">Navigate into a folder</span>
+      </div>
+      <div class="card">
+        <code>cd ..</code>
+        <span class="card-desc">Go back one directory</span>
+      </div>
+      <div class="card">
+        <code>cd ~</code>
+        <span class="card-desc">Go to home directory</span>
+      </div>
+      <div class="card">
+        <code>ls</code>
+        <span class="card-desc">List files and folders in current directory</span>
+      </div>
+      <div class="card">
+        <code>mkdir foldername</code>
+        <span class="card-desc">Create a new directory/folder</span>
+      </div>
+      <div class="card">
+        <code>touch filename</code>
+        <span class="card-desc">Create a new empty file</span>
+      </div>
+      <div class="card">
+        <code>mv old new</code>
+        <span class="card-desc">Move files/folders — also used to <strong>rename</strong> files</span>
+      </div>
+      <div class="card">
+        <code>cp file dest</code>
+        <span class="card-desc">Copy a file to destination</span>
+      </div>
+      <div class="card">
+        <code>cp -r dir dest</code>
+        <span class="card-desc">Copy a directory (must use <strong>-r</strong> for folders)</span>
+      </div>
+      <div class="card">
+        <code>rm filename</code>
+        <span class="card-desc">Remove/delete a file</span>
+      </div>
+      <div class="card">
+        <code>rm -r foldername</code>
+        <span class="card-desc">Remove/delete a folder</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LS FLAGS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🔍</div>
+      <h2 class="section-title">ls Flags & Listing</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <code>ls -l</code>
+        <span class="card-desc">Detailed list with permissions, size, date (A→Z)</span>
+      </div>
+      <div class="card">
+        <code>ls -lr</code>
+        <span class="card-desc">Detailed list in <strong>reverse</strong> order (Z→A)</span>
+      </div>
+      <div class="card">
+        <code>ls -la</code>
+        <span class="card-desc">Show <strong>hidden files</strong> too (like .zshrc)</span>
+      </div>
+      <div class="card">
+        <code>ls -lt</code>
+        <span class="card-desc">Sort by <strong>newest</strong> modified first</span>
+      </div>
+      <div class="card">
+        <code>ls -ltr</code>
+        <span class="card-desc">Sort by <strong>oldest</strong> modified first</span>
+      </div>
+      <div class="card">
+        <code>ls -lS</code>
+        <span class="card-desc">Sort by <strong>largest</strong> file size first</span>
+      </div>
+      <div class="card">
+        <code>ls -lSr</code>
+        <span class="card-desc">Sort by <strong>smallest</strong> file size first</span>
+      </div>
+      <div class="card">
+        <code>ls -lR</code>
+        <span class="card-desc">List <strong>recursively</strong> through all subfolders</span>
+      </div>
+      <div class="card">
+        <code>ls *.js</code>
+        <span class="card-desc">List only <strong>.js</strong> files (* = wildcard/anything)</span>
+      </div>
+      <div class="card">
+        <code>ls foldername</code>
+        <span class="card-desc">Peek inside a folder without navigating into it</span>
+      </div>
+    </div>
+    <div class="note">Small -r = reverse order | Capital -R = recursive (search all subfolders)</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FILE VIEWING -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-yellow">📄</div>
+      <h2 class="section-title">Viewing File Contents</h2>
+    </div>
+
+    <div class="group-label">// cat · vi · echo</div>
+    <div class="cards">
+      <div class="card">
+        <code>cat filename</code>
+        <span class="card-desc">Print entire file contents to terminal</span>
+      </div>
+      <div class="card">
+        <code>vi filename</code>
+        <span class="card-desc">Open file in vi editor</span>
+      </div>
+      <div class="card">
+        <code>i → esc → :wq!</code>
+        <span class="card-desc">vi: press <strong>i</strong> to insert, <strong>esc</strong> to exit insert, <strong>:wq!</strong> to save & quit (remove w to quit without saving)</span>
+      </div>
+      <div class="card">
+        <code>echo 'hello'</code>
+        <span class="card-desc">Display text in terminal</span>
+      </div>
+      <div class="card">
+        <code>echo 'text' >> file</code>
+        <span class="card-desc">Append text to a file without overwriting</span>
+      </div>
+    </div>
+
+    <div class="group-label">// head & tail</div>
+    <div class="cards">
+      <div class="card">
+        <code>head file</code>
+        <span class="card-desc">Show first <strong>10 lines</strong> of file (default)</span>
+      </div>
+      <div class="card">
+        <code>head -20 file</code>
+        <span class="card-desc">Show first 20 lines of file</span>
+      </div>
+      <div class="card">
+        <code>tail file</code>
+        <span class="card-desc">Show last <strong>10 lines</strong> of file (default)</span>
+      </div>
+      <div class="card">
+        <code>tail -20 file</code>
+        <span class="card-desc">Show last 20 lines of file</span>
+      </div>
+      <div class="card">
+        <code>tail -n +25 file</code>
+        <span class="card-desc">Show everything <strong>from line 25</strong> to end</span>
+      </div>
+      <div class="card">
+        <code>tail -f file</code>
+        <span class="card-desc">Live follow file updates — great for <strong>log files!</strong></span>
+      </div>
+      <div class="card">
+        <code>tail -n +25 file | head -n 5</code>
+        <span class="card-desc">Show lines <strong>25 to 29</strong> (start at 25, take 5)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PERMISSIONS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-red">🔐</div>
+      <h2 class="section-title">Permissions (chmod)</h2>
+    </div>
+
+    <div class="group-label">// permission string breakdown</div>
+    <div class="card full" style="margin-bottom:10px;">
+      <code>rw-  r--  r--</code>
+      <p class="card-desc" style="margin-top:8px;">
+        <strong>rw-</strong> = user/owner (read ✅ write ✅ execute ❌) &nbsp;|&nbsp;
+        <strong>r--</strong> = group (read only) &nbsp;|&nbsp;
+        <strong>r--</strong> = others (read only)
+      </p>
+    </div>
+
+    <div class="group-label">// who is u, g, o, a?</div>
+    <table class="permission-table" style="margin-bottom:10px;">
+      <tr><th>Letter</th><th>Means</th><th>Who</th></tr>
+      <tr><td>u</td><td>user</td><td>file owner</td></tr>
+      <tr><td>g</td><td>group</td><td>users in same group</td></tr>
+      <tr><td>o</td><td>others</td><td>everyone else</td></tr>
+      <tr><td>a</td><td>all</td><td>everyone (u+g+o)</td></tr>
+    </table>
+
+    <div class="group-label">// permission letters</div>
+    <table class="permission-table" style="margin-bottom:10px;">
+      <tr><th>Letter</th><th>Permission</th><th>Number</th></tr>
+      <tr><td>r</td><td>read</td><td>4</td></tr>
+      <tr><td>w</td><td>write</td><td>2</td></tr>
+      <tr><td>x</td><td>execute</td><td>1</td></tr>
+    </table>
+
+    <div class="group-label">// chmod commands</div>
+    <div class="cards">
+      <div class="card">
+        <code>chmod u+r file</code>
+        <span class="card-desc">Give owner <strong>read</strong> permission</span>
+      </div>
+      <div class="card">
+        <code>chmod o-w file</code>
+        <span class="card-desc">Remove <strong>write</strong> from others</span>
+      </div>
+      <div class="card">
+        <code>chmod a+x file</code>
+        <span class="card-desc">Give <strong>everyone</strong> execute permission</span>
+      </div>
+      <div class="card">
+        <code>chmod g+rwx file</code>
+        <span class="card-desc">Give group <strong>all</strong> permissions</span>
+      </div>
+      <div class="card">
+        <code>chmod 664 file</code>
+        <span class="card-desc">Numbers: <strong>u=6(rw) g=6(rw) o=4(r)</strong> — syntax: chmod [u][g][o] filename</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- GREP -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🔎</div>
+      <h2 class="section-title">grep — Search Inside Files</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <code>grep "text" file</code>
+        <span class="card-desc">Search for text in a file</span>
+      </div>
+      <div class="card">
+        <code>grep -i "text" file</code>
+        <span class="card-desc">Case <strong>insensitive</strong> search</span>
+      </div>
+      <div class="card">
+        <code>grep -n "text" file</code>
+        <span class="card-desc">Show <strong>line numbers</strong> of matches</span>
+      </div>
+      <div class="card">
+        <code>grep -c "text" file</code>
+        <span class="card-desc"><strong>Count</strong> how many lines match</span>
+      </div>
+      <div class="card">
+        <code>grep -v "text" file</code>
+        <span class="card-desc">Show lines that <strong>DON'T</strong> match</span>
+      </div>
+      <div class="card">
+        <code>grep -w "text" file</code>
+        <span class="card-desc"><strong>Whole word</strong> match only</span>
+      </div>
+      <div class="card">
+        <code>grep -r "text" .</code>
+        <span class="card-desc">Search <strong>recursively</strong> in all subfolders</span>
+      </div>
+      <div class="card">
+        <code>grep -l "text" *.txt</code>
+        <span class="card-desc">Show only <strong>filenames</strong> that match</span>
+      </div>
+      <div class="card">
+        <code>grep -A 2 "text" file</code>
+        <span class="card-desc">Show 2 lines <strong>after</strong> match</span>
+      </div>
+      <div class="card">
+        <code>grep -B 2 "text" file</code>
+        <span class="card-desc">Show 2 lines <strong>before</strong> match</span>
+      </div>
+      <div class="card">
+        <code>grep -o "text" file</code>
+        <span class="card-desc">Show <strong>only the matched</strong> part, not whole line</span>
+      </div>
+      <div class="card">
+        <code>ls -lR | grep .json</code>
+        <span class="card-desc">Pipe ls output into grep to find all <strong>.json</strong> files</span>
+      </div>
+      <div class="card">
+        <code>grep "text" file | wc -l</code>
+        <span class="card-desc">Count how many lines contain the text</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SED -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">✏️</div>
+      <h2 class="section-title">sed — Find & Replace in Files</h2>
+    </div>
+    <div class="note" style="margin-bottom:12px;">s = substitute | d = delete | p = print | -n = suppress default output | -i = edit file directly</div>
+    <div class="cards">
+      <div class="card">
+        <code>sed 's/old/new/' file</code>
+        <span class="card-desc">Replace <strong>first</strong> occurrence per line</span>
+      </div>
+      <div class="card">
+        <code>sed 's/old/new/g' file</code>
+        <span class="card-desc">Replace <strong>all</strong> occurrences</span>
+      </div>
+      <div class="card">
+        <code>sed -i 's/old/new/g' file</code>
+        <span class="card-desc">Edit the file <strong>directly</strong> (Mac: use -i '')</span>
+      </div>
+      <div class="card">
+        <code>sed -ibackup 's/old/new/' file</code>
+        <span class="card-desc">Edit file and <strong>create backup</strong> (file.backup)</span>
+      </div>
+      <div class="card">
+        <code>sed '/ERROR/d' file</code>
+        <span class="card-desc"><strong>Delete</strong> lines containing ERROR</span>
+      </div>
+      <div class="card">
+        <code>sed -n '/ERROR/p' file</code>
+        <span class="card-desc"><strong>Print only</strong> lines containing ERROR</span>
+      </div>
+      <div class="card">
+        <code>sed '3 s/old/new/' file</code>
+        <span class="card-desc">Replace only on <strong>line 3</strong></span>
+      </div>
+      <div class="card">
+        <code>sed '3,5 s/old/new/' file</code>
+        <span class="card-desc">Replace only on <strong>lines 3 to 5</strong></span>
+      </div>
+      <div class="card">
+        <code>sed -n '3,/ERROR/p' file</code>
+        <span class="card-desc">Print from line 3 until ERROR is found</span>
+      </div>
+      <div class="card">
+        <code>sed '/pattern/d' file</code>
+        <span class="card-desc">Delete all lines matching pattern</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AWK -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-yellow">⚙️</div>
+      <h2 class="section-title">awk — Process & Transform Text</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <code>awk '{print}' file</code>
+        <span class="card-desc">Print entire file (like cat)</span>
+      </div>
+      <div class="card">
+        <code>awk '{gsub(/old/,"new")}{print}' file</code>
+        <span class="card-desc">Find and <strong>replace all</strong> occurrences</span>
+      </div>
+      <div class="card full">
+        <code>awk 'BEGIN{print "HEADER"} {print} END{print "FOOTER"}' file</code>
+        <p class="card-desc" style="margin-top:8px;"><strong>BEGIN</strong> = runs before file | <strong>{print}</strong> = every line | <strong>END</strong> = runs after file. Used to add headers/footers to output.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WC -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🔢</div>
+      <h2 class="section-title">wc — Word Count</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <code>wc file</code>
+        <span class="card-desc">Shows <strong>lines, words, characters</strong> all at once</span>
+      </div>
+      <div class="card">
+        <code>wc -l file</code>
+        <span class="card-desc">Count <strong>lines</strong> only</span>
+      </div>
+      <div class="card">
+        <code>wc -w file</code>
+        <span class="card-desc">Count <strong>words</strong> only</span>
+      </div>
+      <div class="card">
+        <code>wc -c file</code>
+        <span class="card-desc">Count <strong>characters</strong> only</span>
+      </div>
+      <div class="card">
+        <code>grep "ERROR" file | wc -l</code>
+        <span class="card-desc">Count how many ERROR lines exist in file</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- NODE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🟢</div>
+      <h2 class="section-title">Node.js Commands</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <code>node -v</code>
+        <span class="card-desc">Check if Node is installed + version</span>
+      </div>
+      <div class="card">
+        <code>npm -v</code>
+        <span class="card-desc">Check npm version</span>
+      </div>
+      <div class="card">
+        <code>node index.js</code>
+        <span class="card-desc">Run a JavaScript file</span>
+      </div>
+      <div class="card">
+        <code>npm init</code>
+        <span class="card-desc">Create a new package.json</span>
+      </div>
+      <div class="card">
+        <code>npm install express</code>
+        <span class="card-desc">Install a package (e.g. express)</span>
+      </div>
+      <div class="card">
+        <code>npm install</code>
+        <span class="card-desc">Install all dependencies from package.json</span>
+      </div>
+    </div>
+    <div class="note">app.use(express.json()) — built-in body parser, replaces need for body-parser package</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- MISC -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">⌨️</div>
+      <h2 class="section-title">Useful Shortcuts</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <code>clear</code>
+        <span class="card-desc">Clear the terminal screen</span>
+      </div>
+      <div class="card">
+        <code>Cmd + K</code>
+        <span class="card-desc">Clear terminal completely (Mac)</span>
+      </div>
+      <div class="card">
+        <code>Ctrl + L</code>
+        <span class="card-desc">Clear terminal (history still accessible)</span>
+      </div>
+      <div class="card">
+        <code>Ctrl + C</code>
+        <span class="card-desc">Stop/cancel current running command</span>
+      </div>
+      <div class="card">
+        <code>Tab</code>
+        <span class="card-desc">Autocomplete folder/file names</span>
+      </div>
+      <div class="card">
+        <code>↑ arrow key</code>
+        <span class="card-desc">Cycle through previous commands</span>
+      </div>
+      <div class="card">
+        <code>date +%s</code>
+        <span class="card-desc">Generate current <strong>Unix timestamp</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <footer>// Terminal & Bash Notes · Devansh · 2026</footer>
+
+</div>
+</body>
+</html>
