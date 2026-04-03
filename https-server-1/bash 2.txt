@@ -1,0 +1,63 @@
+// pwd- current directory 
+// cd-navigate through folders
+//ls- lists the folders and filles
+// mkdir - new directory/folder
+// touch- new file
+// cat- contents in the file
+// vi - insert(to change) and then to exit(esc -> :wq! -> enter) remove w if you dont want to save
+// mv- move files/folders (can also be used to change names of files and folders )
+// cp- you have to use (-r) to copy directiories 
+
+// node commands 
+// nvm 
+// npm - 
+
+// LAISHA WADHWA 
+
+// ls -l (folder name)-  contents inside a directiory(A - Z)
+// index.js
+// package.json
+// style.css
+
+// ls -lr(folder name) - contents inside a directory (Z - A)
+// style.css
+// package.json
+// index.js
+
+
+// ls-t - last modified(first)
+// ls -la - to see hidden files 
+
+// ls -lt    # sort by newest file first
+// ls -ltr   # sort by oldest file first (reverse time)
+// ls -lS    # sort by file size largest first
+// ls -lSr   # sort by file size smallest first
+
+// ls -lr | grep .json( small r to be used to search through same directory whereas capital R will search through all the directiories in the pc )
+
+ls *.js lists all files that end with .js in your current directory.
+
+rm- remove for files 
+rm -r for - folders 
+
+PERMISSONS 
+
+chmod u+r file      # give owner read permission
+chmod o-w file      # remove write from others
+chmod a+x file      # give everyone execute permission
+chmod g+rwx file    # give group all permissions
+
+
+using numbers (4-read,2-write,1-execute)
+syntax:- 
+
+chmod 664(u,g,o) (file name)
+
+echo 'hello world' // displays text 
+
+
+FILE THINGYYY 
+
+head(top 10) (-20(specific number of rows))file name
+
+tail (for bottom same syntax)
